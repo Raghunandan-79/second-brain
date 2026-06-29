@@ -3,6 +3,7 @@ import express from "express";
 import authRouter from "./routes/auth.js";
 import mongoose from "mongoose";
 import contentRouter from "./routes/content.js";
+import brainRouter from "./routes/brain.js";
 const app = express();
 
 app.use(express.json())
@@ -13,17 +14,10 @@ app.get("/", (req, res) => {
     })
 })
 
+// routes
 app.use("/api/v1/auth", authRouter);
-app.use("/api/v1/", contentRouter)
-
-app.post("/api/v1/brain/share", (req, res) => {
-
-});
-
-app.get("/api/v1/brain/:shareLink", (req, res) => {
-
-});
-
+app.use("/api/v1/", contentRouter);
+app.use("/api/v1/brain/", brainRouter);
 
 async function main() {
     if (!process.env.MONGO_URI) {

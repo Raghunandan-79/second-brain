@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { authMiddleware } from "../middlewares/authMiddleware.js";
 import { ContentModel, UserModel } from "../db.js";
+import type { ObjectId } from "mongoose";
 
 const contentRouter = Router();
 
@@ -15,8 +16,7 @@ contentRouter.post("/content", authMiddleware, async (req, res) => {
             type,
             title,
             tags: [],
-            //@ts-ignore
-            userId: req.userId,
+            userId: req.userId as string,
         });
     } catch(e) {
         return res.status(400).json({
@@ -33,7 +33,7 @@ contentRouter.get("/content", authMiddleware, async (req, res) => {
     //@ts-ignore
     const userId = req.userId;
     const content = await ContentModel.find({
-        userId: userId
+        userId: userId as string
     }).populate("userId", "username")
 
     res.json({
@@ -46,9 +46,8 @@ contentRouter.delete("/content", authMiddleware, async (req, res) => {
 
     try {
         await ContentModel.deleteMany({
-            _id: contentId,
-            //@ts-ignore
-            userId: req.userId
+            _id: contentId as ObjectId,
+            userId: req.userId as string
         })
     } catch(e) {
         return res.status(400).json({
