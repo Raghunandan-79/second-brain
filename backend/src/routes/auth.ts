@@ -8,7 +8,7 @@ import { UserModel } from "../db.js";
 
 const authRouter = Router();
 
-authRouter.post("signup", async (req, res) => {
+authRouter.post("/signup", async (req, res) => {
     const requiredBody = z.object({
         username: z.string().min(3).max(100),
         password: z.string().min(3).max(30).regex(
@@ -41,7 +41,7 @@ authRouter.post("signup", async (req, res) => {
         });
     } catch(e) {
         res.status(400).json({
-            message: "User with email already exists"
+            message: "User already exists"
         });
 
         errorThrown = true;
@@ -69,31 +69,37 @@ authRouter.post("/signin", async (req, res) => {
         })
     }
 
-    const { email, password } = req.body;
+    const { username, password } = req.body;
 
-    const user = await UserModel.findOne({
-        email: email
-    });
+    try {
+        const user = await UserModel.findOne({
+            username: username 
+        });
 
-    if (!user) {
+        if (!user) {
+            return res.status(400).json({
+                message: "User doesnot exists"
+            })
+        }
+
+        const passwordMatched = await bcrypt.compare(password, user.password)
+
+        if (passwordMatched) {
+            const token = jwt.sign({
+                id: user._id.toString()
+            }, JWT_SECRET);
+
+            res.json({
+                token: token
+            })
+        } else {
+            res.status(403).json({
+                message: "Incorrect credentials"
+            })
+        }
+    } catch(e) {
         return res.status(400).json({
-            message: "User doesnot exists"
-        })
-    }
-
-    const passwordMatched = await bcrypt.compare(password, user.password)
-
-    if (passwordMatched) {
-        const token = jwt.sign({
-            id: user._id.toString()
-        }, JWT_SECRET);
-
-        res.json({
-            token: token
-        })
-    } else {
-        res.status(403).json({
-            message: "Incorrect credentials"
+            message: "User doesnot exist"
         })
     }
 });

@@ -2,7 +2,10 @@ import "dotenv/config"
 import express from "express";
 import authRouter from "./routes/auth.js";
 import mongoose from "mongoose";
+import contentRouter from "./routes/content.js";
 const app = express();
+
+app.use(express.json())
 
 app.get("/", (req, res) => {
     res.json({
@@ -11,18 +14,7 @@ app.get("/", (req, res) => {
 })
 
 app.use("/api/v1/auth", authRouter);
-
-app.post("/api/v1/content", (req, res) => {
-
-});
-
-app.get("/api/v1/content", (req, res) => {
-
-});
-
-app.delete("/api/v1/content", (req, res) => {
-
-});
+app.use("/api/v1/", contentRouter)
 
 app.post("/api/v1/brain/share", (req, res) => {
 
