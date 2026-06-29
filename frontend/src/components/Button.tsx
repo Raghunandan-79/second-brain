@@ -27,9 +27,9 @@ const defaultStyles = "rounded-md flex"
 const Button = (props: ButtonProps) => {
     return (
         <button className={
-          `${variantStyles[props.variant]} ${defaultStyles} ${sizeStyles[props.size]}`
+            `${variantStyles[props.variant]} ${defaultStyles} ${sizeStyles[props.size]} cursor-pointer`
         }>
-           {props.startIcon ? <div className="pr-2">{props.startIcon}</div> : null}
+            {props.startIcon ? <div className="pr-2">{props.startIcon}</div> : null}
             {props.text}
         </button>
     )
