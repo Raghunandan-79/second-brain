@@ -1,10 +1,39 @@
+import { useRef, useState } from "react"
 import CrossIcon from "../icons/CrossIcon"
 import Button from "./Button"
 import { Input } from "./Input"
+import axios from "axios"
+import { BACKEND_URL } from "../config"
 // import Input from "./Input"
 
+enum ContentType {
+    Youtube = "youtube",
+    Twitter = "twitter"
+}
+
 // controlled component
-const CreateContentModal = ({ open, onClose }) => {
+const CreateContentModal = ({ open, onClose }: any) => {
+    const titleRef = useRef<HTMLInputElement>(null);
+    const linkRef = useRef<HTMLInputElement>(null);
+    const [type, setType] = useState(ContentType.Youtube)
+
+    async function addContent() {
+        const title = titleRef.current?.value;
+        const link = titleRef.current?.value;
+
+        await axios.post(`${BACKEND_URL}/api/v1/content`, {
+            link,
+            title,
+            type
+        }, {
+            headers: {
+                "authorization": localStorage.getItem("authorization")
+            }
+        })
+
+        onClose();
+    }
+
     return (
         <div>
             {open && <div className="w-screen h-screen bg-slate-200 fixed top-0 left-0
@@ -18,12 +47,31 @@ const CreateContentModal = ({ open, onClose }) => {
                         </div>
 
                         <div>
-                            <Input placeholder={"Title"} />
-                            <Input placeholder={"Link"} />
+                            <Input reference={titleRef} type="text" placeholder={"Title"} />
+                            <Input reference={linkRef} type="text" placeholder={"Link"} />
+                        </div>
+
+                        <div>
+                            <h1>Type</h1>
+                            <div className="flex gap-1 p-4">
+                                <Button text="Youtube" variant={type === ContentType.Youtube ?
+                                    "primary" : "secondary"} onClick={() => {
+                                        setType(ContentType.Youtube)
+                                    }}>
+
+                                </Button>
+
+                                <Button text="Twitter" variant={type === ContentType.Twitter ?
+                                    "primary" : "secondary"} onClick={() => {
+                                        setType(ContentType.Twitter)
+                                    }}>
+
+                                </Button>
+                            </div>
                         </div>
 
                         <div className="flex justify-center">
-                            <Button variant="primary" text="Submit" />
+                            <Button onClick={addContent} variant="primary" text="Submit" />
                         </div>
 
                     </span>
