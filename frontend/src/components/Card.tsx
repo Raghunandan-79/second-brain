@@ -1,3 +1,4 @@
+import { useEffect } from "react"
 import ShareIcon from "../icons/ShareIcon"
 import TwitterIcon from "../icons/TwitterIcon"
 import YoutubeIcon from "../icons/YoutubeIcon"
@@ -11,7 +12,47 @@ interface CardProps {
     onDelete?: (id: string) => void;
 }
 
+const getYoutubeEmbedUrl = (url: string): string => {
+    let videoId = "";
+    try {
+        const parsedUrl = new URL(url);
+        if (parsedUrl.hostname === "youtu.be") {
+            videoId = parsedUrl.pathname.substring(1);
+        } else if (parsedUrl.hostname.includes("youtube.com")) {
+            if (parsedUrl.pathname.startsWith("/shorts/")) {
+                videoId = parsedUrl.pathname.split("/")[2];
+            } else if (parsedUrl.pathname === "/watch") {
+                videoId = parsedUrl.searchParams.get("v") || "";
+            } else if (parsedUrl.pathname.startsWith("/embed/")) {
+                videoId = parsedUrl.pathname.split("/")[2];
+            }
+        }
+    } catch (e) {
+        // Fallback using regex
+        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+        const match = url.match(regExp);
+        if (match && match[2].length === 11) {
+            videoId = match[2];
+        }
+    }
+
+    if (videoId) {
+        return `https://www.youtube.com/embed/${videoId}`;
+    }
+    return url;
+}
+
 const Card = ({ id, title, link, type, onDelete }: CardProps) => {
+    useEffect(() => {
+        if (type === "twitter") {
+            // @ts-ignore
+            if (window.twttr && window.twttr.widgets) {
+                // @ts-ignore
+                window.twttr.widgets.load();
+            }
+        }
+    }, [type, link]);
+
     return (
         <div>
             <div className="p-4 bg-white rounded-md border border-gray-200
@@ -41,18 +82,23 @@ const Card = ({ id, title, link, type, onDelete }: CardProps) => {
                 </div>
 
                 <div className="pt-5">
-                    {type === "youtube" && <iframe className="w-full"
-                        src={link.replace("watch", "embed").replace("?v=", "/")}
-                        title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; 
-                            clipboard-write; 
-                            encrypted-media; gyroscope; 
-                            picture-in-picture; web-share"
-                        referrerPolicy="strict-origin-when-cross-origin"
-                        allowFullScreen> </iframe>}
+                    {type === "youtube" && (
+                        <iframe
+                            className="w-full h-48 rounded-md"
+                            src={getYoutubeEmbedUrl(link)}
+                            title="YouTube video player"
+                            frameBorder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            referrerPolicy="strict-origin-when-cross-origin"
+                            allowFullScreen
+                        ></iframe>
+                    )}
 
-                    {type === "twitter" && <blockquote className="twitter-tweet">
-                        <a href={link}></a>
-                    </blockquote>}
+                    {type === "twitter" && (
+                        <blockquote className="twitter-tweet w-full">
+                            <a href={link.replace("x.com", "twitter.com")}></a>
+                        </blockquote>
+                    )}
                 </div>
             </div>
         </div>
