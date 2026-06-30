@@ -4,9 +4,11 @@ import authRouter from "./routes/auth.js";
 import mongoose from "mongoose";
 import contentRouter from "./routes/content.js";
 import brainRouter from "./routes/brain.js";
+import cors from "cors";
 const app = express();
 
-app.use(express.json())
+app.use(express.json());
+app.use(cors());
 
 app.get("/", (req, res) => {
     res.json({
@@ -24,11 +26,13 @@ async function main() {
         throw new Error("MONGO_URI is not defined in environment variables");
     }
 
+    app.listen(3000, () => {
+        console.log("App is running on port 3000");
+    });
+
     try {
         await mongoose.connect(process.env.MONGO_URI);
-        app.listen(3000, () => {
-            console.log("App is running on port 3000");
-        });
+        console.log("Connected to MongoDB");
     } catch (e) {
         console.log("Not able to connect to mongo DB", e);
     }
