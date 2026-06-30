@@ -19,7 +19,7 @@ const CreateContentModal = ({ open, onClose }: any) => {
 
     async function addContent() {
         const title = titleRef.current?.value;
-        const link = titleRef.current?.value;
+        const link = linkRef.current?.value;
 
         await axios.post(`${BACKEND_URL}/api/v1/content`, {
             link,
@@ -57,16 +57,12 @@ const CreateContentModal = ({ open, onClose }: any) => {
                                 <Button text="Youtube" variant={type === ContentType.Youtube ?
                                     "primary" : "secondary"} onClick={() => {
                                         setType(ContentType.Youtube)
-                                    }}>
-
-                                </Button>
+                                    }} />
 
                                 <Button text="Twitter" variant={type === ContentType.Twitter ?
                                     "primary" : "secondary"} onClick={() => {
                                         setType(ContentType.Twitter)
-                                    }}>
-
-                                </Button>
+                                    }} />
                             </div>
                         </div>
 

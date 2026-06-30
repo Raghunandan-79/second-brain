@@ -9,11 +9,11 @@ import { useNavigate } from "react-router-dom";
 const Signin = () => {
     const usernameRef = useRef<HTMLInputElement>(null);
     const passwordRef = useRef<HTMLInputElement>(null);
+    const navigate = useNavigate();
 
     async function signin() {
         const username = usernameRef.current?.value;
         const password = passwordRef.current?.value;
-        const navigate = useNavigate()
 
         try {
             const response = await axios.post(`${BACKEND_URL}/api/v1/auth/signin`, {
@@ -43,6 +43,15 @@ const Signin = () => {
 
                 <div className="flex justify-center pt-4">
                     <Button onClick={signin} loading={false} variant="primary" text="Signin" fullWidth={true} />
+                </div>
+                <div className="text-center pt-4 text-sm text-gray-600">
+                    Don't have an account?{" "}
+                    <button 
+                        onClick={() => navigate("/signup")} 
+                        className="text-blue-600 hover:underline focus:outline-none font-medium cursor-pointer"
+                    >
+                        Sign up
+                    </button>
                 </div>
             </div>
         </div>

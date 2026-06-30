@@ -18,7 +18,7 @@ const linkSchema = new Schema({
     userId: { type: Schema.Types.ObjectId, ref: 'users', required: true },
 });
 
-const contentTypes = ['image', 'video', 'article', 'audio'];
+const contentTypes = ['image', 'video', 'article', 'audio', 'youtube', 'twitter'];
 
 const contentSchema = new Schema({
     link: { type: String, unique: true, required: true },
