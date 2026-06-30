@@ -11,19 +11,13 @@ const authRouter = Router();
 authRouter.post("/signup", async (req, res) => {
     const requiredBody = z.object({
         username: z.string().min(3).max(100),
-        password: z.string().min(3).max(30).regex(
-            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
-            {
-                message:
-                    "Password must contain 1 uppercase, 1 lowercase, 1 number and 1 special character"
-            }
-        ),
+        password: z.string().min(3).max(30),
     }).strict();
 
     const parsedDataWithSuccess = requiredBody.safeParse(req.body);
 
     if (!parsedDataWithSuccess.success) {
-        return res.json({
+        return res.status(400).json({
             message: "Incorrect form",
             error: parsedDataWithSuccess.error
         })

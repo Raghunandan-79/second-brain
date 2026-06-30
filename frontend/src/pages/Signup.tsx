@@ -4,6 +4,7 @@ import { Input } from "../components/Input"
 import axios from "axios";
 import { BACKEND_URL } from "../config";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const Signup = () => {
     const usernameRef = useRef<HTMLInputElement>(null);
@@ -12,6 +13,7 @@ const Signup = () => {
     async function signup() {
         const username = usernameRef.current?.value;
         const password = passwordRef.current?.value;
+        const navigate = useNavigate();
 
         try {
             await axios.post(`${BACKEND_URL}/api/v1/auth/signup`, {
@@ -21,7 +23,7 @@ const Signup = () => {
 
             // 2. Replace alert with success toast
             toast.success("You have signed up successfully!");
-
+            navigate("/signin")
         } catch (error) {
             if (axios.isAxiosError(error) && error.response?.data?.message) {
                 toast.error(error.response.data.message);
