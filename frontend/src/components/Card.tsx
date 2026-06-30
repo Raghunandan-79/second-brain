@@ -10,7 +10,7 @@ const Card = ({ title, link, type }: CardProps) => {
     return (
         <div>
             <div className="p-4 bg-white rounded-md border border-gray-200
-             outline-slate-200 max-w-80 min-h-48">
+             outline-slate-200 max-w-full min-h-48">
                 <div className="flex justify-between">
                     <div className="flex items-center text-md">
                         <div className="text-gray-500 pr-2">
