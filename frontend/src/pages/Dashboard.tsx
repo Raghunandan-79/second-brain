@@ -13,6 +13,7 @@ import toast from "react-hot-toast"
 
 export default function Dashboard() {
   const [modalOpen, setModalOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState("all");
   const {contents, refresh} = useContent();
   const navigate = useNavigate();
   const token = localStorage.getItem("authorization");
@@ -50,9 +51,14 @@ export default function Dashboard() {
     return null;
   }
 
+  const filteredContents = contents.filter(({ type }) => {
+    if (activeTab === "all") return true;
+    return type === activeTab;
+  });
+
   return <div>
-    <Sidebar />
-    <div className="p-4 ml-72 min-h-screen bg-gray-100 border-2">
+    <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
+    <div className="p-4 md:ml-72 min-h-screen bg-gray-100 border-2 pb-24 md:pb-4">
       <CreateContentModal open={modalOpen} onClose={() => {
         setModalOpen(false);
       }} />
@@ -69,8 +75,9 @@ export default function Dashboard() {
                         "authorization": token
                     }
                 });
-                const shareUrl = `http://localhost:5173/share/${response.data.hash}`;
-                alert(shareUrl);
+                const shareUrl = `${window.location.origin}/share/${response.data.hash}`;
+                await navigator.clipboard.writeText(shareUrl);
+                toast.success("Share link copied to clipboard!");
             } catch (error) {
                 toast.error("Failed to share brain");
             }
@@ -78,7 +85,7 @@ export default function Dashboard() {
       </div>
 
       <div className="flex gap-4 flex-wrap mt-4">
-        {contents.map(({_id, type, link, title}) => <Card 
+        {filteredContents.map(({_id, type, link, title}) => <Card 
             key={_id}
             id={_id}
             type={type}

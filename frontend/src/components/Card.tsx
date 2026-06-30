@@ -8,7 +8,7 @@ interface CardProps {
     title: string;
     link: string;
     type: "twitter" | "youtube";
-    onDelete: (id: string) => void;
+    onDelete?: (id: string) => void;
 }
 
 const Card = ({ id, title, link, type, onDelete }: CardProps) => {
@@ -32,9 +32,11 @@ const Card = ({ id, title, link, type, onDelete }: CardProps) => {
                             </a>
                         </div>
 
-                        <div className="text-gray-500 cursor-pointer hover:text-red-600 transition-colors" onClick={() => onDelete(id)}>
-                            <TrashIcon size="lg" />
-                        </div>
+                        {onDelete && (
+                            <div className="text-gray-500 cursor-pointer hover:text-red-600 transition-colors" onClick={() => onDelete(id)}>
+                                <TrashIcon size="lg" />
+                            </div>
+                        )}
                     </div>
                 </div>
 
