@@ -4,7 +4,7 @@ import Signin from './pages/Signin'
 import Signup from './pages/Signup'
 import SharedBrain from './pages/SharedBrain'
 import { Toaster } from 'react-hot-toast'
-import { Analytics } from '@vercel/analytics/next';
+import { Analytics } from '@vercel/analytics/react';
 
 
 const App = () => {
